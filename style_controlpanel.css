@@ -1,0 +1,44 @@
+.control-panel {
+    margin-top: 20px;
+}
+.alerts .alert-item {
+    background: #e3f2fd;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+.soil-history .chart-img {
+    width: 100%;
+    border-radius: 5px;
+}
+.irrigation .toggle-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+.btn {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.btn.on { background: #4caf50; color: #fff; }
+.btn.off { background: #ddd; color: #333; }
+.btn.off.active { background: #ccc; }
+.btn.automatic { background: #00e676; color: #fff; }
+.progress-bar {
+    background: #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+}
+.progress-fill {
+    background: #424242;
+    color: #fff;
+    text-align: center;
+    height: 100%;
+    line-height: 20px;
+    border-radius: 10px;
+}

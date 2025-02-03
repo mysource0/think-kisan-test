@@ -1,0 +1,56 @@
+
+
+#addSensorBtn {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+.sensor_data {
+    text-align: center;
+}
+#addSensorBtn:hover {
+    background-color: #45a049;
+}
+
+.sensors-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.sensor-block {
+    width: 90%;
+    min-height: 8vh;
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.sensor-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.sensor-value {
+    font-size: 20px;
+    color: #4CAF50;
+    margin: 10px 0;
+}
+
+.sensor-charge {
+    font-size: 16px;
+    color: #666;
+}

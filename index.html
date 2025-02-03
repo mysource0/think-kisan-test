@@ -1,0 +1,220 @@
+<!-- contact me @ ---  dineshmarre125@gmail.com -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_controlpanel.css">
+    <link rel="stylesheet" href="style_user_profile.css">
+    <link rel="stylesheet" href="style_sensors.css">
+    <link rel="stylesheet" href="style_document.css">
+    <link rel="stylesheet" href="style_footer.css">
+    <title>Think-Kisan</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+</head>
+<body  onload="readValues()">
+    <div class="header">
+        <div>
+            <span>🌞</span>
+        </div>
+        <div ><span class="weather_api">🌡️ 24°C</span><br><span class="weather_api">💧 10%</span></div>
+        <div ><span class="weather_api">🌬️ 6 km/h</span><br><span class="weather_api">💦 60%</span></div>
+    </div>
+    <!---Main section Control Panel-->
+    <section class="control_panel" id="control_panel_section1">
+        <div class="container">
+            <!-- Control Panel Section -->
+            <section class="control-panel">
+                <h2 class="title">CONTROL PANEL</h2>
+        
+                <!-- Alerts Section -->
+                <div class="card alerts">
+                    <h3 class="section-title">⚠️ Alerts</h3>
+                    <div class="alert-item">Zone 3 fully scanned <span>18:25</span></div>
+                    <div class="alert-item">Precipitation warning received <span>14:53</span></div>
+                    <div class="alert-item">At device low battery <span>11:13</span></div>
+                </div>
+        
+                <!-- Soil Health History -->
+                <div class="card soil-history">
+                    <h3 class="section-title">📈 Soil Health History</h3>
+                    <img src="soil-history-chart.png" alt="Soil health graph" class="chart-img">
+                </div>
+        
+                <!-- Irrigation Panel -->
+                <div class="card irrigation">
+                    <h3 class="section-title">💧 Irrigation Panel</h3>
+                    <div class="toggle-buttons">
+                        <button class="btn on">ON</button>
+                        <button class="btn off active">OFF</button>
+                        <button class="btn automatic">Automatic Mode</button>
+                    </div>
+                </div>
+        
+                <!-- System Progress -->
+                <div class="card system-progress">
+                    <h3 class="section-title">🌞 System Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 68%">68%</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </section>
+
+    <!---Documantation-->
+   <section class="documentation" id="documentation_section2">
+    <div class="documentation-section">
+        <h2>Documentation</h2>
+        <div class="export-options">
+            <button id="exportSheetBtn">Export as Sheet</button>
+            <button id="exportPdfBtn">Export as PDF</button>
+        </div>
+        <textarea id="feedbackTextarea" placeholder="Enter your feedback here..."></textarea>
+        <button id="sendReportBtn">Send Report</button>
+    </div>
+   </section>
+
+   <!--Devices and sensors-->
+   <section class="devices_sensors" id="devices_sensors_section3">
+    <div class="container">
+        <h1 class="sensor_data">Sensors Data</h1>
+       <p class="sensor_data"> <button id="addSensorBtn">Add New Sensor</button></p>
+        <div class="sensors-container" id="sensorsContainer">
+            <!-- Existing sensors -->
+            <div class="sensor-block">
+                <p class="sensor-name">Nitrogen</p>
+                <p class="sensor-value" id="nitrogen_sensor_read"><span id="nitrogen"></span></p>
+            </div>
+            <div class="sensor-block">
+                <p class="sensor-name">Phosphorus</p>
+                <p class="sensor-value" id="Phosphorus_sensor_read"></p>
+            </div>
+            <div class="sensor-block">
+                <p class="sensor-name">Potassium</p>
+                <p class="sensor-value" id="Potassium_sensor_read"></p>
+            </div>
+            <div class="sensor-block">
+                <p class="sensor-name">Ph</p>
+                <p class="sensor-value" id="ph_sensor_read"></p>
+            </div>
+            <!--test-->
+            <div class="sensor-block">
+                <p class="sensor-name">Temperature Sensor</p>
+                <p class="sensor-value">25.4°C</p>
+                <p class="sensor-charge">Charge: 78%</p>
+            </div>
+            <div class="sensor-block">
+                <p class="sensor-name">Humidity Sensor</p>
+                <p class="sensor-value">45% RH</p>
+                <p class="sensor-charge">Charge: 92%</p>
+            </div>
+        </div>
+    </div><br><br>
+   </section>
+
+   <!--Soil data page-->
+   <section class="soil_data" id="soil_data_section4">
+    <div class="container">
+        
+        <h2>SOIL DATA</h2>
+        
+        <div class="section macro">
+            <h3>Macro Nutrients</h3>
+           <div id="Nutrientcalculator"></div>
+        </div>
+        <div class="section macro">
+            <h3>Primary&Secindary Nutrients</h3>
+           <div id="Nutrientcalculator_primary"></div>
+        </div>
+        <div class="section macro">
+            <h3>Micro Nutrients</h3>
+           <div id="Nutrientcalculator_micro"></div>
+        </div>
+        <div class="section macro">
+            <h3>others Nutrients</h3>
+           <div id="Nutrientcalculator_others"></div>
+        </div>
+        
+        <div class="section soil">
+            <h3>Soil Parameters</h3>
+            <p><strong>PH:</strong><span id="phVal" ></span></p>
+            <p><strong>Salinity / EC:</strong> 5</p>
+            <p><strong>Soil Moisture:</strong> 90%</p>
+        </div>
+        
+        <div class="section chemical">
+            <h3>Chemical Parameters</h3>
+            <p><strong>Interpretation of NPK Results</strong></p>
+            <table>
+                <tr>
+                    <th>Nutrients</th>
+                    <th>Low</th>
+                    <th>Medium</th>
+                    <th>High</th>
+                </tr>
+                <tr>
+                    <td>Organic Carbon (%)</td>
+                    <td>&lt; 0.5</td>
+                    <td>0.5 - 0.75</td>
+                    <td>&gt; 0.75</td>
+                </tr>
+                <tr>
+                    <td>Avail. N (kg ha⁻¹)</td>
+                    <td>&lt; 280</td>
+                    <td>280 - 560</td>
+                    <td>&gt; 560</td>
+                </tr>
+                <tr>
+                    <td>Avail. P₂O₅ (kg ha⁻¹)</td>
+                    <td>&lt; 22.5</td>
+                    <td>22.5 - 55.0</td>
+                    <td>&gt; 55.0</td>
+                </tr>
+                <tr>
+                    <td>Avail. K₂O (kg ha⁻¹)</td>
+                    <td>&lt; 144</td>
+                    <td>144 - 336</td>
+                    <td>&gt; 336</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+   </section>
+
+   <!--Profile page-->
+   <section class="profile_and_login" id="profile_and_login_section5">
+    <div class="container">
+   <p class="pfp"> <img src="demo.jpg" alt="User Profile Picture" id="profile_picture"></p>
+    <div class="user-info">
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> johndoe@example.com</p>
+        <p><strong>Role:</strong> Administrator</p>
+    </div>
+    <div class="auth-buttons">
+        <button class="btn login">Login</button>
+        <button class="btn logout">Logout</button>
+        </div>
+    </div>
+   </section>
+
+   
+
+   <footer class="sticky-footer">
+    <div class="nav-buttons">
+        <button class="nav-btn" data-section="section3">3</button>
+        <button class="nav-btn" data-section="section2">2</button>
+        <button class="nav-btn middle-btn" data-section="section1">1</button>
+        <button class="nav-btn" data-section="section4">4</button>
+        <button class="nav-btn" data-section="section5">5</button>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
