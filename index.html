@@ -1,221 +1,450 @@
-<!-- contact me @ ---  dineshmarre125@gmail.com -->
+<!---https://mysource0.github.io/think-kisan-prototype1/-->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style_controlpanel.css">
-    <link rel="stylesheet" href="style_user_profile.css">
-    <link rel="stylesheet" href="style_sensors.css">
-    <link rel="stylesheet" href="style_document.css">
-    <link rel="stylesheet" href="style_footer.css">
-    <title>Think-Kisan</title>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body  onload="readValues()">
-    <div class="header">
-        <div>
-            <span>🌞</span>
-        </div>
-        <div ><span class="weather_api">🌡️ 24°C</span><br><span class="weather_api">💧 10%</span></div>
-        <div ><span class="weather_api">🌬️ 6 km/h</span><br><span class="weather_api">💦 60%</span></div>
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <div class="header-content">
+      <h1 class="title">Sensor Dashboard</h1>
+      <div class="search-container">
+        <button class="search-toggle">
+          <i class="fas fa-search"></i>
+        </button>
+        <div class="search-controls hidden">
+          <div class="search-options">
+            <label>
+              <input type="radio" name="search-type" value="name"> Name
+            </label>
+            <label>
+              <input type="radio" name="search-type" value="doc_id" checked> doc id
+            </label>
+            <label>
+              <input type="radio" name="search-type" value="location"> Location
+            </label>
+          </div>
+          <input type="text" class="search-input hidden" placeholder="Enter document ID...">
+          <button class="hidden btn search_button" onclick="searchDocumentById()">Search</button>
+        
+      </div>
     </div>
-    <!---Main section Control Panel-->
-    <section class="control_panel" id="control_panel_section1">
-        <div class="container">
-            <!-- Control Panel Section -->
-            <section class="control-panel">
-                <h2 class="title">CONTROL PANEL</h2>
-        
-                <!-- Alerts Section -->
-                <div class="card alerts">
-                    <h3 class="section-title">⚠️ Alerts</h3>
-                    <div class="alert-item">Zone 3 fully scanned <span>18:25</span></div>
-                    <div class="alert-item">Precipitation warning received <span>14:53</span></div>
-                    <div class="alert-item">At device low battery <span>11:13</span></div>
-                </div>
-        
-                <!-- Soil Health History -->
-                <div class="card soil-history">
-                    <h3 class="section-title">📈 Soil Health History</h3>
-                    <img src="soil-history-chart.png" alt="Soil health graph" class="chart-img">
-                </div>
-        
-                <!-- Irrigation Panel -->
-                <div class="card irrigation">
-                    <h3 class="section-title">💧 Irrigation Panel</h3>
-                    <div class="toggle-buttons">
-                        <button class="btn on">ON</button>
-                        <button class="btn off active">OFF</button>
-                        <button class="btn automatic">Automatic Mode</button>
-                    </div>
-                </div>
-        
-                <!-- System Progress -->
-                <div class="card system-progress">
-                    <h3 class="section-title">🌞 System Progress</h3>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 68%">68%</div>
-                    </div>
-                </div>
-            </section>
-        </div>
+    <br>
 
+  </header>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <ul class="nav-list">
+      <li> <button class="nav_buttons" id="home_button" onclick="displayLastRecentData()"> <a href="#"><i class="fas fa-home"></i> Home </a></button></li>
+      <li> <button class="nav_buttons" id="database_opereation_button" onclick="display_db_reading_operations()"><a href="#"><i class="fas fa-database"></i> Records History</a></button></li>
+      <li> <button class="nav_buttons" id="exportDataBtn"><a href="#"><i class="fas fa-download"></i> Download PDF</a></button></li>
+      <li> <button class="nav_buttons" id="realtime_data_button"><a href="#"><i class="fas fa-chart-bar"></i> Real-Time Data</a></button></li>
+    <!---   <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li> --> 
+    </ul>
+  </nav>
+
+  <div id="batteryStatus" class="data-card updated">
+  
+    <p class="battery_container"><p class="battery_block" ><strong>Receiver Battery:</strong> <span id="receiverBattery">Loading...</span>%</p>
+    <p class="battery_block"><strong>Transmitter Battery:</strong> <span id="transmitterBattery">Loading...</span>%</p></p>
+
+    <div id="show_upcoming_realtime_data"></div>
+  </div>
+
+
+
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!--Reat time updated data-->
+  <!---  <section class="data-card realtime"> 
+      <h2><i class="fas fa-clock"></i> Real-Time Data</h2>
+      <div class="card-content" id="realtime_data_update">
+        <p>Waiting for sensor data...</p>
+      </div>
+    </section> -------->
+
+
+
+
+
+
+<!--- for searched output-->
+<section class="data-card updated" style="display: none;" id="search_results_section">
+  <h2><i class="fas fa-search"></i> Searched Results  </h2>
+  <div class="card-content">
+    <div id="search_results">
+  </div>
+</section>
+
+<!-------------creating document feed back-->
+<section id="doc_updated_feedback">
+  <div class="data-card" id="doc_update_results"></div>
+</section>
+<!-- last recent updaetd data-->
+
+
+<section class="data-card updated" id="last_recent_updated_section">
+    <h2><i class="fas fa-history"></i> Last Updated</h2>
+    <div class="card-content">
+      <div id="lastRecentOutput">Loading...</div>
+    </div>
+</section>
+
+
+  
+  <!--Range of data-->
+    <section class="data-card range" id="range_data_operations"> 
+
+      <!--data range data function-->
+
+
+        <section id="date_range_data_section">
+            <h2><i class="fas fa-chart-line"></i> Data Range</h2>
+            <div class="card-content">
+                  <div class="date-range">
+                    <table>
+                      <tr><label><td>From date : </td><td><input type="datetime-local" id="startDate" placeholder="from date"></td></label> <br></tr>
+                      <tr><label><td>To date : </td><td><input type="datetime-local" id="endDate" placeholder="to date"></td></label></tr>
+                  </table>
+                  </div>
+                 <p class="dateRange"> <button class="btn primary" id="last_date_data_button" onclick="fetchRangeData()">Fetch Range Data</button></p>
+                  <div id="last_date_range_data"></div>     
+            </div>
+            <br><hr>
+        </section>
+
+        <!--N - Range of data-->
+        <br>
+        <section id="last_n_range_data_section">
+          <h2><i class="fas fa-list"></i> Last N Records</h2>
+          <div class="card-content">
+              <div class="n-records-container">
+                 <table> 
+                  <tr><td><input type="number" id="nRecordsInput" class ="dateInput" placeholder="Enter number of records"></td>
+                 <td> <button class="btn secondary" id="last_n_range_data_button"  onclick="fetchLastNRangeData()">Data Range</button></td></tr>
+                </table>
+              </div>
+              <div id="last_n_range_data"></div>
+          </div>
+          <br>
+      </section>
+      
+
+        <!--Range of data-->
+        <section id="same_name_based_data">
+
+        </section>
+
+        <!--Range of data-->
+        <section id="same_location_based_data">
+
+        </section>
+        <br>
+<!---complete database-->
+        <section class="complete_db">
+          <button class="btn" id="entire_db_button" onclick="getSensorData()">Show Entire Data In DataBase</button>
+          <div class="card-content">
+            <div id="complete_database_data"></div>     
+          </div>
+        </section>
     </section>
+  </main>
 
-    <!---Documantation-->
-   <section class="documentation" id="documentation_section2">
-    <div class="documentation-section">
-        <h2>Documentation</h2>
-        <div class="export-options">
-            <button id="exportSheetBtn">Export as Sheet</button>
-            <button id="exportPdfBtn">Export as PDF</button>
-        </div>
-        <textarea id="feedbackTextarea" placeholder="Enter your feedback here..."></textarea>
-        <button id="sendReportBtn">Send Report</button>
+
+
+
+
+
+
+
+
+  <!-- FAB -->
+  <div class="fab-container">
+    <button class="fab-main">
+      <i class="fas fa-plus"></i>
+    </button>
+    <div class="fab-options hidden">
+      <button class="fab-option plus_options" onclick="create_report()"><i class="fas fa-rss"></i> Create Report</button>
+      <button id="showFormBtn" onclick="toggleForm()" class="fab-option plus_options"><i class="fas fa-download"></i> Create Manual Report</button>
+      
+      
+      <button class="fab-option plus_options"><i class="fas fa-bell"></i> Alerts</button>
     </div>
-   </section>
+  </div>
+  <!-- Hidden Create Report Container -->
+  <div id="create_report_container" style="display:none; border: 1px solid #ccc; padding: 15px; margin: 15px 0; border-radius: 5px;">
+    <h3>Create Report</h3>
+    <table style="width:100%; border-collapse:collapse;">
+      <tr>
+        <td style="padding:8px; text-align:right; vertical-align:middle;"><strong>Start Date:</strong></td>
+        <td style="padding:8px;"><input type="datetime-local" id="reportStartDate" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right; vertical-align:middle;"><strong>End Date:</strong></td>
+        <td style="padding:8px;"><input type="datetime-local" id="reportEndDate" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right; vertical-align:middle;"><strong>Document Name:</strong></td>
+        <td style="padding:8px;"><input type="text" id="reportDocName" placeholder="Enter report doc ID" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right; vertical-align:middle;"><strong>Location:</strong></td>
+        <td style="padding:8px;"><input type="text" id="reportLocation" placeholder="Enter location" style="width:100%;"></td>
+      </tr>
+    </table>
+    <br>
+      <!-- Button to toggle the new document form -->
+      <button class="btn primary" onclick="submitReport()">Submit Report</button>
 
-   <!--Devices and sensors-->
-   <section class="devices_sensors" id="devices_sensors_section3">
-    <div class="container">
-        <h1 class="sensor_data">Sensors Data</h1>
-       <p class="sensor_data"> <button id="addSensorBtn">Add New Sensor</button></p>
-        <div class="sensors-container" id="sensorsContainer">
-            <!-- Existing sensors -->
-            <div class="sensor-block">
-                <p class="sensor-name">Nitrogen</p>
-                <p class="sensor-value" id="nitrogen_sensor_read"><span id="nitrogen"></span></p>
-            </div>
-            <div class="sensor-block">
-                <p class="sensor-name">Phosphorus</p>
-                <p class="sensor-value" id="Phosphorus_sensor_read"></p>
-            </div>
-            <div class="sensor-block">
-                <p class="sensor-name">Potassium</p>
-                <p class="sensor-value" id="Potassium_sensor_read"></p>
-            </div>
-            <div class="sensor-block">
-                <p class="sensor-name">Ph</p>
-                <p class="sensor-value" id="ph_sensor_read"></p>
-            </div>
-            <!--test-->
-            <div class="sensor-block">
-                <p class="sensor-name">Temperature Sensor</p>
-                <p class="sensor-value">25.4°C</p>
-                <p class="sensor-charge">Charge: 78%</p>
-            </div>
-            <div class="sensor-block">
-                <p class="sensor-name">Humidity Sensor</p>
-                <p class="sensor-value">45% RH</p>
-                <p class="sensor-charge">Charge: 92%</p>
-            </div>
-        </div>
-    </div><br><br>
-   </section>
+  </div>
 
-   <!--Soil data page-->
-   <section class="soil_data" id="soil_data_section4">
-    <div class="container">
-        
-        <h2>SOIL DATA</h2>
-        
-        <div class="section macro">
-            <h3>Macro Nutrients</h3>
-           <div id="Nutrientcalculator"></div>
-        </div>
-        <div class="section macro">
-            <h3>Primary&Secindary Nutrients</h3>
-           <div id="Nutrientcalculator_primary"></div>
-        </div>
-        <div class="section macro">
-            <h3>Micro Nutrients</h3>
-           <div id="Nutrientcalculator_micro"></div>
-        </div>
-        <div class="section macro">
-            <h3>others Nutrients</h3>
-           <div id="Nutrientcalculator_others"></div>
-        </div>
-        
-        <div class="section soil">
-            <h3>Soil Parameters</h3>
-            <p><strong>PH:</strong><span id="phVal" ></span></p>
-            <p><strong>Salinity / EC:</strong> 5</p>
-            <p><strong>Soil Moisture:</strong> 90%</p>
-        </div>
-        
-        <div class="section chemical">
-            <h3>Chemical Parameters</h3>
-            <p><strong>Interpretation of NPK Results</strong></p>
-            <table>
-                <tr>
-                    <th>Nutrients</th>
-                    <th>Low</th>
-                    <th>Medium</th>
-                    <th>High</th>
-                </tr>
-                <tr>
-                    <td>Organic Carbon (%)</td>
-                    <td>&lt; 0.5</td>
-                    <td>0.5 - 0.75</td>
-                    <td>&gt; 0.75</td>
-                </tr>
-                <tr>
-                    <td>Avail. N (kg ha⁻¹)</td>
-                    <td>&lt; 280</td>
-                    <td>280 - 560</td>
-                    <td>&gt; 560</td>
-                </tr>
-                <tr>
-                    <td>Avail. P₂O₅ (kg ha⁻¹)</td>
-                    <td>&lt; 22.5</td>
-                    <td>22.5 - 55.0</td>
-                    <td>&gt; 55.0</td>
-                </tr>
-                <tr>
-                    <td>Avail. K₂O (kg ha⁻¹)</td>
-                    <td>&lt; 144</td>
-                    <td>144 - 336</td>
-                    <td>&gt; 336</td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <br><br><br>
-   </section>
 
-   <!--Profile page-->
-   <section class="profile_and_login" id="profile_and_login_section5">
-    <div class="container">
-   <p class="pfp"> <img src="demo.jpg" alt="User Profile Picture" id="profile_picture"></p>
-    <div class="user-info">
-        <p><strong>Name:</strong> John Doe</p>
-        <p><strong>Email:</strong> johndoe@example.com</p>
-        <p><strong>Role:</strong> Administrator</p>
-    </div>
-    <div class="auth-buttons">
-        <button class="btn login">Login</button>
-        <button class="btn logout">Logout</button>
+<!-- Export Modal Section -->
+<!-- Export Modal Section -->
+<section id="pdfgeneratingsection" >
+<div id="exportModal" class="data-card updated">
+  <div class="manual_create_button_div"> <button class="manual_create_button_div" type="button" id="closeExportModal">Close</button></div>
+  <div class="card-content" style=" border: 1px solid #ccc; padding: 15px; margin: 15px 0; border-radius: 5px;">
+    <h2>Export Data Options</h2>
+    <form id="exportForm">
+      <!-- Export Type Options -->
+      <fieldset>
+        <legend>Export Type</legend>
+        <div>
+        <p style="text-align: center;">  <label>
+            <input type="radio" name="exportType" value="byId" checked> Download by ID Of the Document
+          </label><br>
+          <label>
+            <input type="radio" name="exportType" value="lastN"> Download Last N Records Average
+          </label><br>
+          <label>
+            <input type="radio" name="exportType" value="dateRange"> Download Average in Date Range
+          </label><br><hr><br>
+        </div> </p>
+        <div id="exportInputs" style="margin-top: 10px;">
+          <!-- Dynamic inputs inserted here -->
         </div>
-    </div>
-   </section>
+      </fieldset>
+      <!-- Report Header Details (Using Table) -->
+      <fieldset style="margin-top: 20px;">
+        <legend>Report Header Details</legend>
+        <table style="width:100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 5px;"><label for="headerName">Name:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerName" name="headerName" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerNumber">Number:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerNumber" name="headerNumber" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerLocation">Location:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerLocation" name="headerLocation" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerMandal">Mandal:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerMandal" name="headerMandal" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerSoilType">Soil Type:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerSoilType" name="headerSoilType" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerState">State:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerState" name="headerState" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerSoilDensity">Soil Density:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerSoilDensity" name="headerSoilDensity" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerDateTested">Date Tested:</label></td>
+            <td style="padding: 5px;"><input type="date" id="headerDateTested" name="headerDateTested" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerReportGenerated">Report Generated On:</label></td>
+            <td style="padding: 5px;"><input type="datetime-local" id="headerReportGenerated" name="headerReportGenerated" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerCropType">Crop Type:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerCropType" name="headerCropType" required style="width:100%;"></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;"><label for="headerEquipment">Equipment Used:</label></td>
+            <td style="padding: 5px;"><input type="text" id="headerEquipment" name="headerEquipment" required style="width:100%;"></td>
+          </tr>
+        </table>
+      </fieldset>
+      <!-- PDF File Name Option -->
+      <fieldset style="margin-top: 20px;">
+        <legend>PDF File Name Option</legend>
+        <div>
+          <label>
+            <input type="radio" name="pdfNameOption" value="default" checked> Use Default File Name
+          </label>
+          <label>
+            <input type="radio" name="pdfNameOption" value="custom"> Use Custom File Name
+          </label>
+        </div>
+        <div id="customPdfNameContainer" style="margin-top: 10px; display: none;">
+          <label for="customPdfName">PDF File Name:</label>
+          <input type="text" id="customPdfName" name="customPdfName" placeholder="Enter custom PDF file name">
+        </div>
+      </fieldset>
+      <div style="margin-top: 20px;">
+        <button type="button" id="exportBtn">Export PDF</button>
+        <button type="button" id="closeExportModal">Close</button>
+      </div>
+      <div id="exportError" style="color: red; margin-top: 10px;"></div>
+    </form>
+  </div>
+</div>
 
-   
+</section>
 
-   <footer class="sticky-footer">
-    <div class="nav-buttons">
-        <button class="nav-btn" data-section="section3">3</button>
-        <button class="nav-btn" data-section="section2">2</button>
-        <button class="nav-btn middle-btn" data-section="section1">1</button>
-        <button class="nav-btn" data-section="section4">4</button>
-        <button class="nav-btn" data-section="section5">5</button>
-    </div>
-</footer>
 
-<script src="script.js"></script>
 
+
+
+
+
+
+<!---Manual create section -->
+
+<section id="manual_data_create">
+
+<!-- Container for the new document input form -->
+<div id="inputFormContainer" style="display: none; margin-top: 15px;">
+  <div class="data-card">
+    <h3>Create New Sensor Data Document</h3>
+    <table style="width:100%; border-collapse:collapse;">
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Document Name:</strong></td>
+        <td style="padding:8px;"><input type="text" id="document_name" placeholder="Enter document ID" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Location:</strong></td>
+        <td style="padding:8px;"><input type="text" id="location" placeholder="Enter location" style="width:100%;"></td>
+      </tr>
+      <!-- Additional rows for moisture, temperature, etc. -->
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Moisture:</strong></td>
+        <td style="padding:8px;"><input type="number" step="any" id="moisture" placeholder="Enter moisture" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Temperature:</strong></td>
+        <td style="padding:8px;"><input type="number" step="any" id="temperature" placeholder="Enter temperature" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>pH:</strong></td>
+        <td style="padding:8px;"><input type="number" step="any" id="pH" placeholder="Enter pH" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Nitrogen:</strong></td>
+        <td style="padding:8px;"><input type="number" step="any" id="nitrogen" placeholder="Enter nitrogen" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Phosphorus:</strong></td>
+        <td style="padding:8px;"><input type="number" step="any" id="phosphorus" placeholder="Enter phosphorus" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Potassium:</strong></td>
+        <td style="padding:8px;"><input type="number" step="any" id="potassium" placeholder="Enter potassium" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Electrical Conductivity:</strong></td>
+        <td style="padding:8px;"><input type="number" step="any" id="electricalConductivity" placeholder="Enter electrical conductivity" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>RSSI:</strong></td>
+        <td style="padding:8px;"><input type="number" step="any" id="rssi" placeholder="Enter RSSI" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Timestamp:</strong></td>
+        <td style="padding:8px;"><input type="datetime-local" id="timestamp" style="width:100%;"></td>
+      </tr>
+      <tr>
+        <td style="padding:8px; text-align:right;"><strong>Remark:</strong></td>
+        <td style="padding:8px;"><input type="text" id="remark" placeholder="Enter remark" style="width:100%;"></td>
+      </tr>
+    </table>
+    <br>
+    <button class="btn primary" id="submitButton" onclick="createNewDocument()">Submit Document</button>
+  </div>
+</div>
+
+<!-- Feedback container -->
+<div  class="data-card" id="creationFeedback"></div>
+</section>  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  // Add Android Bridge polyfill for web browsers
+  if (typeof AndroidBridge === 'undefined') {
+      window.AndroidBridge = {
+          savePDF: (base64Data, fileName) => {
+              const link = document.createElement('a');
+              link.href = `data:application/pdf;base64,${base64Data}`;
+              link.download = fileName;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+          }
+      };
+  }
+  </script>
+  <script type="module" src="script.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const searchToggle = document.querySelector('.search-toggle');
+  const title = document.querySelector('.title');
+  const searchControls = document.querySelector('.search-controls');
+  const fabMain = document.querySelector('.fab-main');
+  const fabOptions = document.querySelector('.fab-options');
+
+  // Search toggle
+  searchToggle.addEventListener('click', () => {
+    title.classList.toggle('hidden');
+    searchControls.classList.toggle('active');
+  });
+
+  // FAB toggle
+  fabMain.addEventListener('click', () => {
+    fabOptions.classList.toggle('active');
+  });
+
+  // Close on click outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+      title.classList.remove('hidden');
+      searchControls.classList.remove('active');
+    }
+    if (!e.target.closest('.fab-container')) {
+      fabOptions.classList.remove('active');
+    }
+  });
+});
+</script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
